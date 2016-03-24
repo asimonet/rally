@@ -685,7 +685,9 @@ class NovaServers(utils.NovaScenario,
     @validation.required_services(consts.Service.NOVA)
     @validation.required_openstack(admin=True, users=True)
     @scenario.configure(context={"cleanup": ["nova"]})
-    def boot_and_migrate_server(self, image, flavor, **kwargs):
+    def boot_and_migrate_server(self, image, flavor,
+                                min_sleep=0, max_sleep=0,
+                                **kwargs):
         """Migrate a server.
 
         This scenario launches a VM on a compute node available in
@@ -694,9 +696,13 @@ class NovaServers(utils.NovaScenario,
 
         :param image: image to be used to boot an instance
         :param flavor: flavor to be used to boot an instance
+        :param min_sleep: Minimum sleep time in seconds (non-negative)
+        :param max_sleep: Maximum sleep time in seconds (non-negative)
         :param kwargs: Optional additional arguments for server creation
         """
         server = self._boot_server(image, flavor, **kwargs)
+        self.sleep_between(min_sleep, max_sleep)
+
         self._stop_server(server)
         self._migrate(server)
         # NOTE(wtakase): This is required because cold migration and resize
