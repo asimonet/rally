@@ -705,7 +705,6 @@ class BootServerAttachCreatedVolumeAndLiveMigrate(utils.NovaScenario,
         self._delete_volume(volume)
         self._delete_server(server)
 
-
 @types.convert(image={"type": "glance_image"},
                flavor={"type": "nova_flavor"})
 @validation.image_valid_on_flavor("flavor", "image")
