@@ -472,6 +472,7 @@ class TaskCommands(object):
 
         results = [{"key": x["key"], "result": x["data"]["raw"],
                     "sla": x["data"]["sla"],
+                    "hooks": x["data"]["hooks"],
                     "load_duration": x["data"]["load_duration"],
                     "full_duration": x["data"]["full_duration"]}
                    for x in task.get_results()]
@@ -581,6 +582,7 @@ class TaskCommands(object):
                 task_results = map(
                     lambda x: {"key": x["key"],
                                "sla": x["data"]["sla"],
+                               "hooks": x["data"]["hooks"],
                                "result": x["data"]["raw"],
                                "load_duration": x["data"]["load_duration"],
                                "full_duration": x["data"]["full_duration"]},
@@ -660,6 +662,7 @@ class TaskCommands(object):
                 tasks_results = map(
                     lambda x: {"key": x["key"],
                                "sla": x["data"]["sla"],
+                               "hooks": x["data"]["hooks"],
                                "result": x["data"]["raw"],
                                "load_duration": x["data"]["load_duration"],
                                "full_duration": x["data"]["full_duration"]},
