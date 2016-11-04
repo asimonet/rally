@@ -56,6 +56,42 @@ class CreateAndListImage(utils.GlanceScenario, nova_utils.NovaScenario):
         self._list_images()
 
 
+@types.convert(image_location={"type": "path_or_url"})
+@validation.required_services(consts.Service.GLANCE)
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["glance"]},
+                    name="GlanceImages.create_and_list_images")
+class CreateAndListImages(utils.GlanceScenario, nova_utils.NovaScenario):
+
+    def run(self, container_format, image_location, disk_format,
+            nb_images=1, **kwargs):
+        """Create images and then list all images.
+
+        Measure the "glance image-list" command performance.
+
+        :param container_format: container format of image. Acceptable
+                                 formats: ami, ari, aki, bare, and ovf
+        :param image_location: image file location
+        :param disk_format: disk format of image. Acceptable formats:
+                            ami, ari, aki, vhd, vmdk, raw, qcow2, vdi, and iso
+        :param n: number of images to create
+        :param min_sleep: Minimum sleep time in seconds (non-negative)
+        :param max_sleep: Maximum sleep time in seconds (non-negative)
+        :param kwargs: optional parameters to create image
+        """
+        
+        self._create_images(container_format,
+                           image_location,
+                           disk_format,
+                           nb_images=1,
+                           sleep_min=0,
+                           sleep_max=0,
+                           **kwargs)
+
+        self.sleep_between(min_sleep, max_sleep)
+        self._list_images()
+
+
 @validation.required_services(consts.Service.GLANCE)
 @validation.required_openstack(users=True)
 @scenario.configure(context={"cleanup": ["glance"]},

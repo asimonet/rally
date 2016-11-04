@@ -63,6 +63,32 @@ class GlanceScenario(scenario.OpenStackScenario):
         return client.create_image(container_format, image_location,
                                    disk_format, **kwargs)
 
+    @atomic.action_timer("glance.create_images")
+    def _create_images(self, container_format, image_location, disk_format,
+                      n=1, **kwargs):
+        """Create new images
+
+        :param container_format: container format of image. Acceptable
+                                 formats: ami, ari, aki, bare, and ovf
+        :param image_location: image file location
+        :param disk_format: disk format of image. Acceptable formats:
+                            ami, ari, aki, vhd, vmdk, raw, qcow2, vdi, and iso
+        :param n: number of images to create
+        :param kwargs: optional parameters to create image
+
+        :returns: image object
+        """
+        
+        images = []
+        for _ in xrange(n):
+            kwargs["name"] = self.generate_random_name()
+            client = glance_wrapper.wrap(self._clients.glance, self)
+            images.append(client.create_image(container_format,
+                                    image_location,
+                                    disk_format, **kwargs))
+        
+        return images
+
     @atomic.action_timer("glance.delete_image")
     def _delete_image(self, image):
         """Deletes given image.
