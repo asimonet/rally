@@ -522,6 +522,22 @@ class NovaScenario(scenario.OpenStackScenario):
         keypair = self.clients("nova").keypairs.create(keypair_name, **kwargs)
         return keypair.name
 
+    @atomic.action_timer("nova.create_keypairs")
+    def _create_keypairs(self, n=1, **kwargs):
+        """Create a keypair
+
+        :param n: Number of keypairs to create
+        :returns: Created keypair name
+        """
+        
+        keypairs = []
+        for _ in xrange(n):
+            keypair_name = self.generate_random_name()
+            keypair = self.clients("nova").keypairs.create(keypair_name, **kwargs)
+            keypairs.append(keypair.name)
+            
+        return keypairs
+
     @atomic.action_timer("nova.list_keypairs")
     def _list_keypairs(self):
         """Return user keypairs list."""
@@ -1045,6 +1061,27 @@ class NovaScenario(scenario.OpenStackScenario):
         name = self.generate_random_name()
         return self.admin_clients("nova").flavors.create(name, ram, vcpus,
                                                          disk, **kwargs)
+
+    @atomic.action_timer("nova.create_flavors")
+    def _create_flavors(self, n=1, **kwargs):
+        """Create flavors
+
+        :param n: Number of flavors to create
+        :param kwargs: Optional additional arguments for flavor creation
+        """
+        
+        flavors = []
+        for _ in xrange(n):
+            name = self.generate_random_name()
+            ram = random.randint(1024, 65536)
+            vcpus = random.randint(1, 64)
+            disk = random.randint(20, 2000)
+            
+            flavor = self.admin_clients("nova").flavors.create(name, ram, vcpus,
+                                                         disk, **kwargs)
+            flavors.append(flavor)
+        
+        return flavors
 
     @atomic.action_timer("nova.list_flavor_access")
     def _list_flavor_access(self, flavor):

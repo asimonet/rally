@@ -30,15 +30,19 @@ from rally.task import validation
                     name="NovaKeypair.create_and_list_keypairs")
 class CreateAndListKeypairs(utils.NovaScenario):
 
-    def run(self, **kwargs):
-        """Create a keypair with random name and list keypairs.
+    def run(self, min_sleep=0, max_sleep=0, nb_keypairs=1, **kwargs):
+        """Create keypairs with random name and list keypairs.
 
-        This scenario creates a keypair and then lists all keypairs.
+        This scenario creates keypairs and then lists all keypairs.
 
+        :param min_sleep: Minimum sleep time in seconds (non-negative)
+        :param max_sleep: Maximum sleep time in seconds (non-negative)
+        :param nb_keypairs: Number of keypairs to create (non-zero)
         :param kwargs: Optional additional arguments for keypair creation
         """
 
-        self._create_keypair(**kwargs)
+        self._create_keypairs(nb_keypairs, **kwargs)
+        self.sleep_between(min_sleep, max_sleep)
         self._list_keypairs()
 
 

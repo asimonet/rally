@@ -46,6 +46,31 @@ class ListFlavors(utils.NovaScenario):
 
 
 @validation.required_services(consts.Service.NOVA)
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["nova"]},
+                    name="NovaFlavors.create_and_list_flavors")
+class CreateAndListFlavors(utils.NovaScenario):
+
+    def run(self, min_sleep=0, max_sleep=0, nb_flavors=1, **kwargs):
+        """Create flavors with random values and list flavors.
+
+        This scenario creates flavors and then lists all flavors.
+
+        :param min_sleep: Minimum sleep time in seconds (non-negative)
+        
+        :param max_sleep: Maximum sleep time in seconds (non-negative)
+        
+        :param nb_flavors: Number of flavors to create (non-zero)
+        
+        :param kwargs: Optional additional arguments for flavor creation
+        """
+
+        self._create_flavors(nb_flavors, **kwargs)
+        self.sleep_between(min_sleep, max_sleep)
+        self._list_flavors()
+
+
+@validation.required_services(consts.Service.NOVA)
 @validation.required_openstack(admin=True)
 @scenario.configure(context={"admin_cleanup": ["nova"]},
                     name="NovaFlavors.create_and_list_flavor_access")
